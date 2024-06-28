@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
-
 import 'package:mynotes/constants/routes.dart';
+
+import '../utilities/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -64,7 +65,7 @@ class _RegisterViewState extends State<RegisterView> {
                         email: email, password: password);
                 devtools.log(userCredential.toString());
               } on FirebaseAuthException catch (e) {
-                await _showErrorDialog(
+                await showErrorDialog(
                     'Invalid inputs. Please try again with proper inputs.',
                     context);
                 devtools.log(e.code);
@@ -82,31 +83,4 @@ class _RegisterViewState extends State<RegisterView> {
       ),
     );
   }
-}
-
-Future<void> _showErrorDialog(String message, BuildContext context) async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button to dismiss dialog
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Error'),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Text(message),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('OK'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
 }

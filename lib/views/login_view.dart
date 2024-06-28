@@ -4,6 +4,8 @@ import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/main.dart';
 import 'dart:developer' as devtools show log;
 
+import 'package:mynotes/utilities/show_error_dialog.dart';
+
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
@@ -65,7 +67,7 @@ class _LoginViewState extends State<LoginView> {
 
                 devtools.log(userCredential.toString());
               } on FirebaseAuthException catch (e) {
-                await _showErrorDialog(
+                await showErrorDialog(
                     'Invalid credentials. Please try again.', context);
                 devtools.log(e.code);
               }
@@ -83,31 +85,4 @@ class _LoginViewState extends State<LoginView> {
       ),
     );
   }
-}
-
-Future<void> _showErrorDialog(String message, BuildContext context) async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button to dismiss dialog
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Error'),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Text(message),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('OK'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
 }
