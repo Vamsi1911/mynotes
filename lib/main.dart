@@ -19,6 +19,7 @@ void main() {
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),
+        '/notes/': (context) => const NotesView(),
       }));
 }
 
@@ -35,10 +36,10 @@ class HomePage extends StatelessWidget {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               final user = FirebaseAuth.instance.currentUser;
-              print(user);
+              devtools.log(user.toString());
               if (user != null) {
                 if (user.emailVerified) {
-                  return const _NotesView();
+                  return const NotesView();
                 } else {
                   return const VerifyEmailView();
                 }
@@ -62,14 +63,14 @@ class HomePage extends StatelessWidget {
 
 enum MenuAction { logout }
 
-class _NotesView extends StatefulWidget {
-  const _NotesView({super.key});
+class NotesView extends StatefulWidget {
+  const NotesView({super.key});
 
   @override
-  State<_NotesView> createState() => __NotesViewState();
+  State<NotesView> createState() => _NotesViewState();
 }
 
-class __NotesViewState extends State<_NotesView> {
+class _NotesViewState extends State<NotesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
