@@ -1,7 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
-import 'package:mynotes/main.dart';
+import 'package:mynotes/services/auth/auth_exceptions.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
 import 'dart:developer' as devtools show log;
 
 import 'package:mynotes/utilities/show_error_dialog.dart';
@@ -59,12 +60,13 @@ class _LoginViewState extends State<LoginView> {
               final email = _email.text;
               final password = _password.text;
               try {
-                final userCredential = await FirebaseAuth.instance
-                    .signInWithEmailAndPassword(
-                        email: email, password: password);
-                final user = FirebaseAuth.instance.currentUser;
+                final userCredential = await AuthService.firebase().logIn(
+                  email: email,
+                  password: password,
+                );
+                final user = AuthService.firebase().currentUser;
                 if (!context.mounted) return;
-                if (user?.emailVerified ?? false) {
+                if (user?.isEmailVerified ?? false) {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     notesRoute,
                     (route) => false,
@@ -75,10 +77,14 @@ class _LoginViewState extends State<LoginView> {
                 }
 
                 devtools.log(userCredential.toString());
-              } on FirebaseAuthException catch (e) {
-                devtools.log(e.code);
+              } on InvalidCredentialAuthException {
                 await showErrorDialog(
                   'Invalid credentials. Please try again.',
+                  context,
+                );
+              } on GenericAuthException {
+                await showErrorDialog(
+                  'Authentication Error',
                   context,
                 );
               }
