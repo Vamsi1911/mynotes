@@ -60,15 +60,27 @@ class _RegisterViewState extends State<RegisterView> {
               final email = _email.text;
               final password = _password.text;
               try {
-                final userCredential = await FirebaseAuth.instance
-                    .createUserWithEmailAndPassword(
-                        email: email, password: password);
-                devtools.log(userCredential.toString());
+                await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                    email: email, password: password);
+                final user = FirebaseAuth.instance.currentUser;
+                await user?.sendEmailVerification();
+                if (!context.mounted) return;
+                Navigator.of(context).pushNamed(verifyEmailRoute);
               } on FirebaseAuthException catch (e) {
-                await showErrorDialog(
-                    'Invalid inputs. Please try again with proper inputs.',
-                    context);
                 devtools.log(e.code);
+                if (!context.mounted) return;
+                if (e.code == 'email-already-in-use') {
+                  await showErrorDialog(
+                      'Email already in use. Try logging in', context);
+                } else if (e.code == 'weak-password') {
+                  await showErrorDialog(
+                      'Your passwrod is weak. Try using different password',
+                      context);
+                } else {
+                  await showErrorDialog(
+                      'Invalid inputs. Please try again with proper inputs.',
+                      context);
+                }
               }
             },
             child: const Text('Register'),
