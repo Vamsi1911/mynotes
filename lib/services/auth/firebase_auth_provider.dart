@@ -9,22 +9,65 @@ import 'package:firebase_auth/firebase_auth.dart'
 
 class FirebaseAuthProvider implements AuthProvider {
   @override
+  Future<void> initialize() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
+  // @override
+  // Future<AuthUser> createUser({
+  //   required String email,
+  //   required String password,
+  // }) async {
+  //   try {
+  //     await FirebaseAuth.instance.createUserWithEmailAndPassword(
+  //       email: email,
+  //       password: password,
+  //     );
+  //     final user = currentUser;
+  //     if (user != null) {
+  //       return user;
+  //     } else {
+  //       throw UserNotloggenInAuthException();
+  //     }
+  //   } on FirebaseAuthException catch (e) {
+  //     if (e.code == 'email-already-in-use') {
+  //       throw EmailAlreadyExistsAuthException();
+  //     } else if (e.code == 'weak-password') {
+  //       throw WeakPasswordAuthException();
+  //     } else if (e.code == 'invalid-email') {
+  //       throw InvalidEmailAuthException();
+  //     } else {
+  //       throw GenericAuthException();
+  //     }
+  //   } catch (_) {
+  //     throw GenericAuthException();
+  //   }
+  // }
+  @override
   Future<AuthUser> createUser({
     required String email,
     required String password,
   }) async {
     try {
+      if (!email.contains('vamsi') && !email.contains('@iitg.ac.in')) {
+        throw InvalidEmailAuthException();
+      }
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+
       final user = currentUser;
+
       if (user != null) {
         return user;
       } else {
         throw UserNotloggenInAuthException();
       }
     } on FirebaseAuthException catch (e) {
+      // Handle Firebase specific exceptions
       if (e.code == 'email-already-in-use') {
         throw EmailAlreadyExistsAuthException();
       } else if (e.code == 'weak-password') {
@@ -35,6 +78,7 @@ class FirebaseAuthProvider implements AuthProvider {
         throw GenericAuthException();
       }
     } catch (_) {
+      // Handle any other exceptions
       throw GenericAuthException();
     }
   }
@@ -94,12 +138,5 @@ class FirebaseAuthProvider implements AuthProvider {
     } else {
       throw UserNotloggenInAuthException();
     }
-  }
-  
-  @override
-  Future<void> initialize() async{
-    await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        );
   }
 }

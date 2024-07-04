@@ -19,7 +19,7 @@ void main() {
         useMaterial3: true,
       ),
       home: const HomePage(),
-      routes: {
+      routes: { 
         loginRoute: (context) => const LoginView(),
         registerRoute: (context) => const RegisterView(),
         notesRoute: (context) => const NotesView(),
