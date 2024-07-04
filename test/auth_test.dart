@@ -103,7 +103,7 @@ class MockAuthProvider implements AuthProvider {
       throw InvalidCredentialAuthException();
     }
     if (password == 'password123') throw InvalidCredentialAuthException();
-    const user = AuthUser(isEmailVerified: false);
+    const user = AuthUser(isEmailVerified: false, email: 'random@iitg.ac.in');
     _user = user;
     return Future.value(user);
   }
@@ -121,7 +121,7 @@ class MockAuthProvider implements AuthProvider {
     if (!isIntialised) throw NotInitialializedException();
     final user = _user;
     if (user == null) throw UserNotloggenInAuthException();
-    const newUser = AuthUser(isEmailVerified: true);
+    const newUser = AuthUser(isEmailVerified: true, email: 'random@iitg.ac.in');
     _user = newUser;
   }
 }
