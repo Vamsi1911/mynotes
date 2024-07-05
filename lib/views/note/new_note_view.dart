@@ -84,19 +84,22 @@ class _NewNoteViewState extends State<NewNoteView> {
             case ConnectionState.done:
               _note = snapshot.data as DatabaseNote;
               _setupControllerListener();
-              return TextField(
-                controller: _textController,
-                keyboardType: TextInputType.multiline,
-                minLines: 3,
-                maxLines: null,
-                decoration: const InputDecoration(
-                  hintText: 'Start typing here..',
-                  fillColor: Colors.black12,
-                  filled: true,
+              return Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextField(
+                  controller: _textController,
+                  keyboardType: TextInputType.multiline,
+                  minLines: 3,
+                  maxLines: null,
+                  decoration: const InputDecoration(
+                    hintText: 'Start typing here..',
+                    fillColor: Colors.black12,
+                    filled: true,
+                  ),
                 ),
               );
             default:
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
           }
         },
       ),
