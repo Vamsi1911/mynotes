@@ -4,16 +4,16 @@ import 'dart:developer' as devtools show log;
 
 import 'package:mynotes/utilities/dialogs/delete_dialog.dart';
 
-typedef DeleteNoteCallBack = void Function(DatabaseNote note);
-
 class NotesListView extends StatelessWidget {
   final List<DatabaseNote> notes;
-  final DeleteNoteCallBack onDeleteNote;
+  final void Function(DatabaseNote note) onDeleteNote;
+  final void Function(DatabaseNote note) onTapNote;
 
   const NotesListView({
     super.key,
     required this.notes,
     required this.onDeleteNote,
+    required this.onTapNote,
   });
 
   @override
@@ -38,6 +38,7 @@ class NotesListView extends StatelessWidget {
               },
               icon: const Icon(Icons.delete),
             ),
+            onTap: () => onTapNote(note),
           );
         });
   }
