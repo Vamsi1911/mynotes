@@ -12,9 +12,9 @@ class NotesService {
   List<DatabaseNote> _notes = [];
 
   static final NotesService _shared = NotesService._sharedInstance();
-  NotesService._sharedInstance(){
+  NotesService._sharedInstance() {
     _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
-      onListen: (){
+      onListen: () {
         _notesStreamController.sink.add(_notes);
       },
     );
@@ -38,7 +38,7 @@ class NotesService {
   }
 
   Future<void> _cacheNotes() async {
-    final allNotes = await geAllNotes();
+    final allNotes = await getAllNotes();
     _notes = allNotes.toList();
     _notesStreamController.add(_notes);
   }
@@ -68,7 +68,7 @@ class NotesService {
     }
   }
 
-  Future<Iterable<DatabaseNote>> geAllNotes() async {
+  Future<Iterable<DatabaseNote>> getAllNotes() async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final notes = await db.query(
@@ -225,9 +225,11 @@ class NotesService {
 
   Future<void> open() async {
     if (_db != null) {
+      devtools.log('db is not null');
       throw DatabaseAlreadyOpenException();
     }
     try {
+      devtools.log('db is null, so instantia');
       final docsPath = await getApplicationDocumentsDirectory();
       devtools.log(docsPath.toString());
       final dbPath = join(docsPath.path, dbName);
