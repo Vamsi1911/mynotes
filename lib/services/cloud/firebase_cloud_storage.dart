@@ -38,25 +38,25 @@ class FirebaseCloudStorage {
             isEqualTo: ownerUserId,
           )
           .get()
-          .then(
-            (value) => value.docs.map(
-              (doc) => CloudNote(
-                documentId: doc.id,
-                ownerUserId: doc.data()[ownerUserIdFieldsName] as String,
-                text: doc.data()[textFieldName] as String,
-              ),
-            ),
-          );
+          .then((value) => value.docs.map(
+                (doc) => CloudNote.fromSnapshot(doc),
+              ));
     } catch (e) {
       throw CouldNotCreateNoteException();
     }
   }
 
-  void createNewNote({required String ownerUserId}) async {
-    await notes.add({
+  Future<CloudNote> createNewNote({required String ownerUserId}) async {
+    final document = await notes.add({
       ownerUserIdFieldsName: ownerUserId,
       textFieldName: '',
     });
+    final fetchedNote = await document.get();
+    return CloudNote(
+      documentId: fetchedNote.id,
+      ownerUserId: ownerUserId,
+      text: '',
+    );
   }
 
   static final FirebaseCloudStorage _shared =
